@@ -16,6 +16,12 @@ public interface IRepository<T> : IDisposable
     void Add(T item);
 
     /// <summary>
+    /// Insert range of new T-item in databese
+    /// </summary>
+    /// <param name="items">Range of inserting items</param>
+    void AddRange(params T[] items);
+
+    /// <summary>
     /// Update contained T-item in database
     /// </summary>
     /// <param name="item">Item for updating</param>
@@ -39,4 +45,11 @@ public interface IRepository<T> : IDisposable
     /// <param name="item">Item for inserting</param>
     /// <returns>Void result by default</returns>
     Task AddAsync(T item);
+
+    /// <summary>
+    /// Insert new T-item in database by async
+    /// </summary>
+    /// <param name="items">Range of inserting items</param>
+    /// <returns>Void result by default</returns>
+    Task AddRangeAsync(params T[] items);
 }

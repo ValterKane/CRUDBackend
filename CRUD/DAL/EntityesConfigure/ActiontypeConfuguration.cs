@@ -11,9 +11,9 @@ public class ActiontypeConfuguration : IEntityTypeConfiguration<Actiontype>
         //Mapping to table
         builder.ToTable("actiontype");
         //Mapping to prop
-        builder.Property(p => p.TypeID).HasColumnName("typeid");
+        builder.Property(p => p.TypeId).HasColumnName("typeid");
         builder.Property(p => p.Name).HasColumnName("name");
         //Keys configuration
-        builder.HasKey(e => e.TypeID).HasName("actiontype_pkey");
+        builder.HasKey(e => e.TypeId).HasName("actiontype_pkey");
     }
 }

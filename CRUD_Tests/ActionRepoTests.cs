@@ -38,6 +38,30 @@ public class ActionRepoTests
     }
 
     [Fact]
+    public void CreateTest_CountOfItemsShouldBeIncreaseBy2()
+    {
+        // Arrange
+        var opt = new DbContextOptionsBuilder<MyDbContext>()
+            .UseInMemoryDatabase("AddRangeTest").Options;
+
+        using var context = new MyDbContext(opt);
+        
+        var repos = new ActionRepository(context);
+        
+        // Act
+        repos.AddRange(new[]
+        {
+            new Action() { Actuuid = Guid.NewGuid(), Name = "Test 1", Schedule = "{}", Typeid = 1 }
+            , new Action() { Actuuid = Guid.NewGuid(), Name = "Test 2", Schedule = "{}", Typeid = 2 },
+        });
+
+        var newDataCount = context.Actions.Count();
+
+        // Assert
+        Assert.Equal(2, newDataCount);
+    }
+
+    [Fact]
     public void DeleteTest_CountsInContextShouldBeChange()
     {
         // Arrange
@@ -133,6 +157,36 @@ public class ActionRepoTests
     }
 
     [Fact]
+    public void IntegratedTest_ItemShouldBeSaveAfterDeleteContext()
+    {
+        // Arrange
+        var option = new DbContextOptionsBuilder<MyDbContext>()
+            .UseInMemoryDatabase("IntegraTest").Options;
+
+
+        //Act
+        using (var context = new MyDbContext(option))
+        {
+            var repos = new ActionRepository(context);
+            repos.Add(new Action() { Actuuid = Guid.NewGuid(), Name = "TestAdd", Schedule = "{}", Typeid = 1 });
+            repos.Add(new Action() { Actuuid = Guid.NewGuid(), Name = "TestAdd_1", Schedule = "{}", Typeid = 1 });
+        }
+
+        string nameOfLastObj;
+
+        using (var context = new MyDbContext(option))
+        {
+            var repos = new ActionRepository(context);
+            var dataOut = repos.GetAll().ToList();
+            nameOfLastObj = dataOut.Last().Name;
+        }
+
+        //Assert
+        Assert.NotEmpty(nameOfLastObj);
+        Assert.Equal("TestAdd_1", nameOfLastObj);
+    }
+
+    [Fact]
     public async void ReadAsyncTest_NumberOfInsertedAndReadItemsShouldBeEqual()
     {
         // Arrange
@@ -172,13 +226,38 @@ public class ActionRepoTests
         var oldCount = await context.Actions.CountAsync();
 
         var repository = new ActionRepository(context);
-        
+
         // Act
-        await repository.AddAsync(new Action() { Actuuid = Guid.NewGuid(), Name = "NewItem", Schedule = "{}", Typeid = 1
+        await repository.AddAsync(new Action()
+        {
+            Actuuid = Guid.NewGuid(), Name = "NewItem", Schedule = "{}", Typeid = 1
         });
 
         // Assert
         Assert.NotEmpty(context.Actions);
+    }
 
+    [Fact]
+    public async void CreateAsyncTest_CountOfItemShouldBeIncreaseBy2()
+    {
+        // Arrange
+        var opt = new DbContextOptionsBuilder<MyDbContext>()
+            .UseInMemoryDatabase("AddAsyncRangeTest").Options;
+
+        await using var context = new MyDbContext(opt);
+        
+        var repos = new ActionRepository(context);
+        
+        // Act
+        await repos.AddRangeAsync(new[]
+        {
+            new Action() { Actuuid = Guid.NewGuid(), Name = "Test 1", Schedule = "{}", Typeid = 1 }
+            , new Action() { Actuuid = Guid.NewGuid(), Name = "Test 2", Schedule = "{}", Typeid = 2 },
+        });
+
+        var newDataCount = context.Actions.Count();
+
+        // Assert
+        Assert.Equal(2, newDataCount);
     }
 }

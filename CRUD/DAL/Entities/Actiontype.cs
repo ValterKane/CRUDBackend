@@ -5,7 +5,7 @@ namespace CRUD.DAL.Entities;
 
 public class Actiontype
 {
-    public int TypeID { get; set; }
+    public int TypeId { get; set; }
     
     public string Name { get; set; } = null!;
     
