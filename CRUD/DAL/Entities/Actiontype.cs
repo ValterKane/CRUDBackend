@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Actiontype
+public class Actiontype : BaseEntity
 {
     public int TypeId { get; set; }
     

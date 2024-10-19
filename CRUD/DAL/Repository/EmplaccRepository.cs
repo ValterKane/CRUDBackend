@@ -1,10 +1,11 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class EmplaccRepository(DbContext context) : IRepository<Emplsaccdatum>
+public class EmplaccRepository(MyDbContext context) : IRepository<Emplsaccdatum>
 {
     private bool _disposed = false;
 

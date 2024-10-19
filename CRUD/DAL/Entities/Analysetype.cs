@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Analysetype
+public class Analysetype : BaseEntity
 {
     public int Typeid { get; set; }
 

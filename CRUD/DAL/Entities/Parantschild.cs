@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Entities;
 
-public partial class Parantschild
+public partial class Parantschild : BaseEntity
 {
     public Guid Chuuid { get; set; }
     

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Analyseresult
+public class Analyseresult : BaseEntity
 {
     public long Resid { get; set; }
     

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Docspec
+public class Docspec : BaseEntity
 {
     public int Specid { get; set; }
 

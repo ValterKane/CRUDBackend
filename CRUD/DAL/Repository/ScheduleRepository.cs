@@ -1,9 +1,10 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Repository;
 
-public class ScheduleRepository(DbContext context) : IRepository<Schedule>
+public class ScheduleRepository(MyDbContext context) : IRepository<Schedule>
 {
     private bool _disposed = false;
 

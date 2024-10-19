@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Doctor
+public class Doctor : BaseEntity
 {
     public Guid Docuuid { get; set; }
 

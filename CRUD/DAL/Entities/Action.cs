@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Action
+public class Action : BaseEntity
 {
     public Guid Actuuid { get; set; }
     

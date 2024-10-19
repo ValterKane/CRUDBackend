@@ -1,9 +1,10 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Repository;
 
-public sealed class AnalyseresultRepository(DbContext context) : IRepository<Analyseresult>
+public sealed class AnalyseresultRepository(MyDbContext context) : IRepository<Analyseresult>
 {
     private bool _disposed = false;
 

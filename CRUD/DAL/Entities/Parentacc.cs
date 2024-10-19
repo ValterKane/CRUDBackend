@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Entities;
 
-public  class Parentacc
+public  class Parentacc : BaseEntity
 {
     public Guid Paruuid { get; set; }
     public string Login { get; set; } = null!;

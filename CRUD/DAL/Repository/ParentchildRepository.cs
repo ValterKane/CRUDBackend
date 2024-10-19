@@ -1,10 +1,11 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class ParentchildRepository(DbContext context) : IRepository<Parantschild>
+public class ParentchildRepository(MyDbContext context) : IRepository<Parantschild>
 {
     private bool _disposed = false;
 

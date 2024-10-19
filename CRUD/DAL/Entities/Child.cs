@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public class Child
+public class Child : BaseEntity
 {
     public Guid Chuuid { get; set; }
 

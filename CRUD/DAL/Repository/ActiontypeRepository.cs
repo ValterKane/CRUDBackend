@@ -1,10 +1,10 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Action = CRUD.DAL.Entities.Action;
 
 namespace CRUD.DAL.Repository;
 
-public sealed class ActiontypeRepository(DbContext context) : IRepository<Actiontype>
+public sealed class ActiontypeRepository(MyDbContext context) : IRepository<Actiontype>
 {
     private bool _disposed = false;
 

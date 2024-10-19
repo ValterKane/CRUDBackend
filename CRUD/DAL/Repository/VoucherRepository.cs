@@ -1,10 +1,11 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class VoucherRepository(DbContext context) : IRepository<Voucher>
+public class VoucherRepository(MyDbContext context) : IRepository<Voucher>
 {
     private bool _disposed = false;
 

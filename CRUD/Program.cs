@@ -1,7 +1,10 @@
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 using CRUD.BLL.Controllers;
 using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using CRUD.DAL.Repository;
+using CRUD.Service.ReflectionApplication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,15 +19,19 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
-builder.Services.AddTransient<ActionRepository>();
-
-
 // Add database
 builder.Services.AddDbContext<MyDbContext>(optionsBuilder =>
 {
     IConfiguration config = builder.Configuration;
     optionsBuilder.UseNpgsql(config.GetConnectionString("DataBase"));
 });
+
+var repositoryService = ServiceLocator.FindAllRepositories<BaseEntity>();
+
+foreach (var listOfClasses in repositoryService.SelectMany(repo => repo.Value))
+{
+    builder.Services.AddTransient(listOfClasses);
+}
 
 var app = builder.Build();
 

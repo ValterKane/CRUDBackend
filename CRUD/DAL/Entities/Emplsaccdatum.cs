@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Entities;
 
-public partial class Emplsaccdatum
+public partial class Emplsaccdatum : BaseEntity
 {
     public Guid Empluuid { get; set; }
     

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public partial class Voucher
+public class Voucher : BaseEntity
 {
     public int Void { get; set; }
 

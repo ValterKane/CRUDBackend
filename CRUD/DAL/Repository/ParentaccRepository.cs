@@ -1,9 +1,10 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Repository;
 
-public class ParentaccRepository(DbContext context) : IRepository<Parentacc>
+public class ParentaccRepository(MyDbContext context) : IRepository<Parentacc>
 {
     private bool _disposed = false;
 

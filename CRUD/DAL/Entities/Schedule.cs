@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public partial class Schedule
+public class Schedule : BaseEntity
 {
     public DateTime Timemark { get; set; }
 

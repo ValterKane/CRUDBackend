@@ -1,9 +1,10 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Repository;
 
-public class CategoryRepository(DbContext context) : IRepository<Category>
+public class CategoryRepository(MyDbContext context) : IRepository<Category>
 {
     private bool _disposed = false;
 

@@ -1,10 +1,11 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class MedcartRepository(DbContext context) : IRepository<Medcart>
+public class MedcartRepository(MyDbContext context) : IRepository<Medcart>
 {
     private bool _disposed = false;
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Entities;
 
-public class Medcart
+public class Medcart : BaseEntity
 {
     public DateTime Timemark { get; set; }
     public Guid Chuuid { get; set; }

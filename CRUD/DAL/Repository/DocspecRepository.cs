@@ -1,10 +1,11 @@
-﻿using CRUD.DAL.Entities;
+﻿using CRUD.DAL.Context;
+using CRUD.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class DocspecRepository(DbContext context) : IRepository<Docspec>
+public class DocspecRepository(MyDbContext context) : IRepository<Docspec>
 {
     private bool _disposed = false;
 

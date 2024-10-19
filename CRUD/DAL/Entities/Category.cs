@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CRUD.DAL.Entities;
 
-public partial class Category
+public partial class Category : BaseEntity
 {
     public int Catid { get; set; }
 
