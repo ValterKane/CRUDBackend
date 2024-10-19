@@ -16,11 +16,14 @@ public class ParantschildCoonfiguration : IEntityTypeConfiguration<Parantschild>
         builder.Property(p => p.Kinship).HasColumnName("kinship");
         // Keys configuration
         builder.HasKey(e => new { chuuid = e.Chuuid, paruuid = e.Paruuid }).HasName("parantschild_pkey");
+        
         builder.HasIndex(i => i.Chuuid).IsUnique().HasDatabaseName("parantschild_chuuid_key");
         builder.HasIndex(i => i.Paruuid).IsUnique().HasDatabaseName("parantschild_paruuid_key");
+
         builder.HasOne(d => d.Chuu).WithOne(p => p.Parantschild)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("parantschild_chuuid_fkey");
+
         builder.HasOne(d => d.Paruu).WithOne(p => p.Parantschild)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("parantschild_paruuid_fkey");

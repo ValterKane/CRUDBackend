@@ -12,7 +12,7 @@ public class AnalysetypeConfiguratuon : IEntityTypeConfiguration<Analysetype>
         builder.ToTable("analysetype");
         // Mapping to prop
         builder.Property(p => p.Name).HasColumnName("name");
-        builder.Property(p => p.Typeid).HasColumnName("type");
+        builder.Property(p => p.Typeid).HasColumnName("typeid");
         // Keys configuration
         builder.HasKey(e => e.Typeid).HasName("analysetype_pkey");
     }

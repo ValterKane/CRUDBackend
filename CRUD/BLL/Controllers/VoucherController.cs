@@ -6,27 +6,27 @@ using Action = System.Action;
 
 namespace CRUD.BLL.Controllers;
 
-[Route("api/action-type")]
+[Route("api/voucher")]
 [ApiController]
-public class ActiontypeController(ActiontypeRepository repository) : ControllerBase
+public class VoucherController(VoucherRepository repository) : ControllerBase
 {
     [HttpGet("GetAll")]
-    public async Task<IEnumerable<Actiontype>> ReadAll()
+    public async Task<IEnumerable<Voucher>> GetAllAsync()
     {
         return await repository.GetAllAsync();
     }
 
     [HttpGet("GetSingle")]
-    public async Task<ActionResult<Actiontype>> ReadSingle(int typeId)
+    public async Task<ActionResult<Voucher>> GetSingle(int voucherId)
     {
         var data = await repository.GetAllAsync();
-        var dataForResult = data.FirstOrDefault(x => x.TypeId == typeId );
-        if (dataForResult is null) return NotFound($"Cannot find the action with type id:{typeId}");
+        var dataForResult = data.FirstOrDefault(x => x.Void == voucherId);
+        if (dataForResult is null) return NotFound($"Cannot find the voucher with :{voucherId}");
         return dataForResult;
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteAction(Actiontype action)
+    public async Task<ActionResult> DeleteAction(Voucher action)
     {
         try
         {
@@ -41,7 +41,7 @@ public class ActiontypeController(ActiontypeRepository repository) : ControllerB
     }
 
     [HttpPut]
-    public async Task<ActionResult> UpdateAction(Actiontype action)
+    public async Task<ActionResult> UpdateAction(Voucher action)
     {
         try
         {
@@ -56,7 +56,7 @@ public class ActiontypeController(ActiontypeRepository repository) : ControllerB
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddAction(Actiontype action)
+    public async Task<ActionResult> AddAction(Voucher action)
     {
         try
         {
@@ -69,4 +69,5 @@ public class ActiontypeController(ActiontypeRepository repository) : ControllerB
             return BadRequest(e.Message);
         }
     }
+   
 }

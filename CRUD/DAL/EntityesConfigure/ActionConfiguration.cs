@@ -16,7 +16,7 @@ public class ActionConfiguration : IEntityTypeConfiguration<Action>
         builder.Property(p => p.Typeid).HasColumnName("type").ValueGeneratedNever();
         // Keys configuration
         builder.HasKey(p => p.Actuuid).HasName("actions_pkey");
-        builder.HasOne(d => d.ActionType).WithMany(p => p.Actions)
+        builder.HasOne(d => d.ActionType).WithMany(p => p.Actions).HasForeignKey(k=>k.Typeid)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("actions_type_fkey");
     }

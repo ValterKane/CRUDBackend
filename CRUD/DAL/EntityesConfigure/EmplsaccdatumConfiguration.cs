@@ -17,9 +17,10 @@ public class EmplsaccdatumConfiguration : IEntityTypeConfiguration<Emplsaccdatum
         builder.Property(p => p.Role).HasColumnName("role");
         // Keys configuration
         builder.HasKey(k => k.Empluuid).HasName("emplsaccdata_pkey");
+
         builder.HasOne(d => d.Empluu).WithOne(p => p.Emplsaccdatum).OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("emplsaccdata_empluuid_fkey");
-        builder.HasIndex(p => p.Empluuid).IsUnique().HasDatabaseName("emplsaccdata_empluuid_key");
 
+        builder.HasIndex(p => p.Empluuid).IsUnique().HasDatabaseName("emplsaccdata_empluuid_key");
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CRUD.DAL.Entities.Abstraction;
 
 namespace CRUD.DAL.Entities;
 
@@ -15,6 +16,5 @@ public class Action : BaseEntity
     
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     
-    [ForeignKey("Typeid")]
     public virtual Actiontype? ActionType { get; set; }
 }

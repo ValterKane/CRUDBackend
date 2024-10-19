@@ -16,8 +16,11 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
         builder.Property(p => p.Specid).HasColumnName("specid");
         // Keys configuration
         builder.HasKey(e => e.Docuuid).HasName("doctors_pkey");
+
         builder.HasOne(d => d.Docuu).WithOne(p => p.Doctor).OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("doctors_docuuid_fkey");
-        builder.HasOne(d => d.Spec).WithMany((p => p.Doctors)).HasConstraintName("doctors_specid_fkey");
+
+        builder.HasOne(d => d.Spec).WithMany((p => p.Doctors)).HasConstraintName("doctors_specid_fkey").HasForeignKey
+            (k => k.Specid);
     }
 }

@@ -17,10 +17,12 @@ public class MedcartConfiguration : IEntityTypeConfiguration<Medcart>
         builder.Property(p => p.Docuuid).HasColumnName("docuuid");
         // Keys configuration
         builder.HasKey(e => new { timemark = e.Timemark, chuuid = e.Chuuid }).HasName("medcart_pkey");
-        builder.HasOne(d => d.Chuu).WithMany(p => p.Medcarts)
+
+        builder.HasOne(d => d.Chuu).WithMany(p => p.Medcarts).HasForeignKey(k => k.Chuuid)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("medcart_chuuid_fkey");
-        builder.HasOne(d => d.Docuu).WithMany(p => p.Medcarts)
+
+        builder.HasOne(d => d.Docuu).WithMany(p => p.Medcarts).HasForeignKey(k => k.Docuuid)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("medcart_docuuid_fkey");
     }

@@ -18,7 +18,8 @@ public class VoucherConfiguration : IEntityTypeConfiguration<Voucher>
         builder.Property(p => p.Sourcevo).HasColumnName("sourcevo");
         //Keys configuration
         builder.HasKey(e => e.Void).HasName("voucher_pkey");
-        builder.HasOne(d => d.Paruu).WithMany(p => p.Vouchers)
+
+        builder.HasOne(d => d.Paruu).WithMany(p => p.Vouchers).HasForeignKey(k => k.Paruuid)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("voucher_paruuid_fkey");
     }

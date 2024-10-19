@@ -17,6 +17,7 @@ public class ParentaccConfiguration : IEntityTypeConfiguration<Parentacc>
         builder.Property(p => p.Status).HasColumnName("status");
         //Keys configuration
         builder.HasKey(e => e.Login).HasName("parentacc_pkey");
+
         builder.HasOne(d => d.Paruu).WithOne(p => p.Parentacc)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("parentacc_paruuid_fkey");

@@ -18,7 +18,8 @@ public class MedemplConfiguration : IEntityTypeConfiguration<Medempl>
         builder.Property(p => p.Catid).HasColumnName("catid");
         // Keys configuration
         builder.HasKey(e => e.Empluuid).HasName("medempls_pkey");
-        builder.HasOne(d => d.Cat).WithMany(p => p.Medempls)
+
+        builder.HasOne(d => d.Cat).WithMany(p => p.Medempls).HasForeignKey(k => k.Catid)
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("medempls_catid_fkey");
     }
