@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUD.DAL.Repository;
-    
+
 public class CategoryRepository(DbContext context) : IRepository<Category>
 {
     private bool _disposed = false;
@@ -14,18 +14,32 @@ public class CategoryRepository(DbContext context) : IRepository<Category>
 
     public void Add(Category item)
     {
+        if (context.Set<Category>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Category>().Add(item);
         context.SaveChanges();
     }
 
     public async Task AddAsync(Category item)
     {
+        if (context.Set<Category>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         await context.Set<Category>().AddAsync(item);
+        await context.SaveChangesAsync();
     }
 
     public async Task AddRangeAsync(params Category[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Category>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         await context.Set<Category>().AddRangeAsync(items);
         await context.SaveChangesAsync();
     }
@@ -33,6 +47,13 @@ public class CategoryRepository(DbContext context) : IRepository<Category>
     public void AddRange(params Category[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Category>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         context.Set<Category>().AddRange(items);
         context.SaveChanges();
     }
@@ -45,13 +66,9 @@ public class CategoryRepository(DbContext context) : IRepository<Category>
 
     public void Delete(Category item)
     {
-        var actionToRemove = context.Set<Category>().FirstOrDefault(x => x.Catid == item.Catid);
-
-        if (actionToRemove != null)
-            context.Set<Category>().Remove(actionToRemove);
-
+        if (!context.Set<Category>().Contains(item)) return;
+        context.Set<Category>().Remove(item);
         context.SaveChanges();
-
     }
 
     public async Task<IEnumerable<Category>> GetAllAsync()
@@ -74,5 +91,4 @@ public class CategoryRepository(DbContext context) : IRepository<Category>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-  
 }

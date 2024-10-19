@@ -11,36 +11,62 @@ public sealed class ActionRepository(DbContext context) : IRepository<Action>
     public IEnumerable<Action> GetAll()
     {
         return context.Set<Action>();
-
     }
+
     public void Add(Action item)
     {
+        if (context.Set<Action>().Contains(item)) throw new ArgumentException($"{nameof(item)} already contains!");
         context.Set<Action>().Add(item);
         context.SaveChanges();
+    }
+
+    public async Task AddAsync(Action item)
+    {
+        if (context.Set<Action>().Contains(item)) throw new ArgumentException($"{nameof(item)} already contains!");
+        await context.Set<Action>().AddAsync(item);
+        await context.SaveChangesAsync();
     }
 
     public void AddRange(params Action[] items)
     {
         if (items.Length != 0)
         {
+            foreach (var item in items)
+            {
+                if (context.Set<Action>().Contains(item))
+                    throw new ArgumentException($"{nameof(item)} already contains!");
+            }
+
             context.Set<Action>().AddRange(items);
             context.SaveChanges();
         }
     }
 
+    public async Task AddRangeAsync(params Action[] items)
+    {
+        if (items.Length != 0)
+        {
+            foreach (var item in items)
+            {
+                if (context.Set<Action>().Contains(item))
+                    throw new ArgumentException($"{nameof(item)} already contains!");
+            }
+
+            await context.Set<Action>().AddRangeAsync(items);
+            await context.SaveChangesAsync();
+        }
+    }
+
     public void Update(Action item)
     {
-        context.Entry(item!).State = EntityState.Modified;
+        context.Entry(item).State = EntityState.Modified;
         context.SaveChanges();
     }
 
     public void Delete(Action item)
     {
-        var actionToRemove = context.Set<Action>().FirstOrDefault(x => x.Actuuid == item.Actuuid);
-
-        if (actionToRemove != null)
-            context.Set<Action>().Remove(actionToRemove);
-
+        if (!context.Set<Action>().Contains(item)) return;
+        context.Set<Action>().Remove(item);
         context.SaveChanges();
     }
 
@@ -48,21 +74,6 @@ public sealed class ActionRepository(DbContext context) : IRepository<Action>
     {
         await context.Set<Action>().LoadAsync();
         return context.Set<Action>();
-    }
-
-    public async Task AddAsync(Action item)
-    {
-        await context.Set<Action>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Action[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Action>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)

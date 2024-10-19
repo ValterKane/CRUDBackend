@@ -11,21 +11,52 @@ public class DocspecRepository(DbContext context) : IRepository<Docspec>
     public IEnumerable<Docspec> GetAll()
     {
         return context.Set<Docspec>();
-
     }
+
     public void Add(Docspec item)
     {
+        if (context.Set<Docspec>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Docspec>().Add(item);
         context.SaveChanges();
     }
 
     public void AddRange(params Docspec[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Docspec>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Docspec>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Docspec>().AddRange(items);
+        context.SaveChanges();
+    }
+
+    public async Task AddAsync(Docspec item)
+    {
+        if (context.Set<Docspec>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Docspec>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Docspec[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Docspec>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Docspec>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
     }
 
     public void Update(Docspec item)
@@ -36,11 +67,8 @@ public class DocspecRepository(DbContext context) : IRepository<Docspec>
 
     public void Delete(Docspec item)
     {
-        var actionToRemove = context.Set<Docspec>().FirstOrDefault(x => x.Specid == item.Specid);
-
-        if (actionToRemove != null)
-            context.Set<Docspec>().Remove(actionToRemove);
-
+        if (!context.Set<Docspec>().Contains(item)) return;
+        context.Set<Docspec>().Remove(item);
         context.SaveChanges();
     }
 
@@ -48,21 +76,6 @@ public class DocspecRepository(DbContext context) : IRepository<Docspec>
     {
         await context.Set<Docspec>().LoadAsync();
         return context.Set<Docspec>();
-    }
-
-    public async Task AddAsync(Docspec item)
-    {
-        await context.Set<Docspec>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Docspec[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Docspec>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)
@@ -79,5 +92,4 @@ public class DocspecRepository(DbContext context) : IRepository<Docspec>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-   
 }

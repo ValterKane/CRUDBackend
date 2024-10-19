@@ -14,18 +14,32 @@ public class ChildRepository(DbContext context) : IRepository<Child>
 
     public void Add(Child item)
     {
+        if (context.Set<Child>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Child>().Add(item);
         context.SaveChanges();
     }
 
     public async Task AddAsync(Child item)
     {
+        if (context.Set<Child>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         await context.Set<Child>().AddAsync(item);
+        await context.SaveChangesAsync();
     }
 
     public async Task AddRangeAsync(params Child[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Child>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         await context.Set<Child>().AddRangeAsync(items);
         await context.SaveChangesAsync();
     }
@@ -33,6 +47,13 @@ public class ChildRepository(DbContext context) : IRepository<Child>
     public void AddRange(params Child[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Child>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         context.Set<Child>().AddRange(items);
         context.SaveChanges();
     }
@@ -45,11 +66,8 @@ public class ChildRepository(DbContext context) : IRepository<Child>
 
     public void Delete(Child item)
     {
-        var actionToRemove = context.Set<Child>().FirstOrDefault(x => x.Chuuid == item.Chuuid);
-
-        if (actionToRemove != null)
-            context.Set<Child>().Remove(actionToRemove);
-
+        if (!context.Set<Child>().Contains(item)) return;
+        context.Set<Child>().Remove(item);
         context.SaveChanges();
     }
 

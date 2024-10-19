@@ -11,21 +11,52 @@ public class MedemplRepository(DbContext context) : IRepository<Medempl>
     public IEnumerable<Medempl> GetAll()
     {
         return context.Set<Medempl>();
-
     }
+
     public void Add(Medempl item)
     {
+        if (context.Set<Medempl>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Medempl>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Medempl item)
+    {
+        if (context.Set<Medempl>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Medempl>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Medempl[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Medempl>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Medempl>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Medempl[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Medempl>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Medempl>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Medempl>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Medempl item)
@@ -36,11 +67,8 @@ public class MedemplRepository(DbContext context) : IRepository<Medempl>
 
     public void Delete(Medempl item)
     {
-        var actionToRemove = context.Set<Medempl>().FirstOrDefault(x => x.Empluuid == item.Empluuid);
-
-        if (actionToRemove != null)
-            context.Set<Medempl>().Remove(actionToRemove);
-
+        if (!context.Set<Medempl>().Contains(item)) return;
+        context.Set<Medempl>().Remove(item);
         context.SaveChanges();
     }
 
@@ -48,21 +76,6 @@ public class MedemplRepository(DbContext context) : IRepository<Medempl>
     {
         await context.Set<Medempl>().LoadAsync();
         return context.Set<Medempl>();
-    }
-
-    public async Task AddAsync(Medempl item)
-    {
-        await context.Set<Medempl>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Medempl[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Medempl>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)
@@ -79,5 +92,4 @@ public class MedemplRepository(DbContext context) : IRepository<Medempl>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
 }

@@ -3,7 +3,7 @@ using CRUD.DAL.Repository;
 using Microsoft.EntityFrameworkCore;
 using Action = CRUD.DAL.Entities.Action;
 
-namespace CRUD_Tests;
+namespace CRUD_Tests.InMemoryTests;
 
 public class ActionRepoTests
 {
@@ -38,6 +38,55 @@ public class ActionRepoTests
     }
 
     [Fact]
+    public void CreateTest_ShouldBeThrowNewArgumentExeption()
+    {
+        // Arrange
+        var option = new DbContextOptionsBuilder<MyDbContext>()
+            .UseInMemoryDatabase("Exeption_Test").Options;
+
+        using var context = new MyDbContext(option);
+
+        var repository = new ActionRepository(context);
+
+        // Act
+        Action inMemAction = new()
+        {
+            Actuuid = Guid.NewGuid(), Name = "Contained Action", Schedule = "{}", Typeid = 1
+        };
+
+        context.Actions.Add(inMemAction);
+        context.SaveChanges();
+
+        // Act + Assert
+        var exeption = Assert.Throws<ArgumentException>(() => repository.Add(inMemAction));
+        Assert.Equal($"item already contains!", exeption.Message);
+    }
+
+    [Fact]
+    public async Task CreateAsyncTest_ShouldBeThrowNewArgumentExeption()
+    {
+        // Arrange
+        var option = new DbContextOptionsBuilder<MyDbContext>()
+            .UseInMemoryDatabase("ExeptionAsync_Test").Options;
+
+        using var context = new MyDbContext(option);
+
+        var repository = new ActionRepository(context);
+
+        Action inMemAction = new()
+        {
+            Actuuid = Guid.NewGuid(), Name = "Contained Action", Schedule = "{}", Typeid = 1
+        };
+        
+        await context.Actions.AddAsync(inMemAction);
+        await context.SaveChangesAsync();
+
+        // Act + Assert
+        var exeption = await Assert.ThrowsAsync<ArgumentException>(() => repository.AddAsync(inMemAction));
+        Assert.Equal($"item already contains!", exeption.Message);
+    }
+
+    [Fact]
     public void CreateTest_CountOfItemsShouldBeIncreaseBy2()
     {
         // Arrange
@@ -45,9 +94,9 @@ public class ActionRepoTests
             .UseInMemoryDatabase("AddRangeTest").Options;
 
         using var context = new MyDbContext(opt);
-        
+
         var repos = new ActionRepository(context);
-        
+
         // Act
         repos.AddRange(new[]
         {
@@ -187,7 +236,7 @@ public class ActionRepoTests
     }
 
     [Fact]
-    public async void ReadAsyncTest_NumberOfInsertedAndReadItemsShouldBeEqual()
+    public async Task ReadAsyncTest_NumberOfInsertedAndReadItemsShouldBeEqual()
     {
         // Arrange
         var option = new DbContextOptionsBuilder<MyDbContext>().UseInMemoryDatabase("ReadAsyncTest").Options;
@@ -216,7 +265,7 @@ public class ActionRepoTests
     }
 
     [Fact]
-    public async void CreateAsyncTest_ContextDataShouldNotBeEmpty()
+    public async Task CreateAsyncTest_ContextDataShouldNotBeEmpty()
     {
         // Arrange
         var option = new DbContextOptionsBuilder<MyDbContext>().UseInMemoryDatabase("CreateAsyncTest").Options;
@@ -238,16 +287,16 @@ public class ActionRepoTests
     }
 
     [Fact]
-    public async void CreateAsyncTest_CountOfItemShouldBeIncreaseBy2()
+    public async Task CreateAsyncTest_CountOfItemShouldBeIncreaseBy2()
     {
         // Arrange
         var opt = new DbContextOptionsBuilder<MyDbContext>()
             .UseInMemoryDatabase("AddAsyncRangeTest").Options;
 
         await using var context = new MyDbContext(opt);
-        
+
         var repos = new ActionRepository(context);
-        
+
         // Act
         await repos.AddRangeAsync(new[]
         {

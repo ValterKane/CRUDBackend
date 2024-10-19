@@ -10,21 +10,52 @@ public class ScheduleRepository(DbContext context) : IRepository<Schedule>
     public IEnumerable<Schedule> GetAll()
     {
         return context.Set<Schedule>();
-
     }
+
     public void Add(Schedule item)
     {
+        if (context.Set<Schedule>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Schedule>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Schedule item)
+    {
+        if (context.Set<Schedule>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Schedule>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Schedule[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Schedule>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Schedule>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Schedule[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Schedule>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Schedule>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Schedule>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Schedule item)
@@ -35,34 +66,15 @@ public class ScheduleRepository(DbContext context) : IRepository<Schedule>
 
     public void Delete(Schedule item)
     {
-        var actionToRemove = context.Set<Schedule>().FirstOrDefault(x => x.Timemark == item.Timemark && x.Chuuid == item.Chuuid);
-
-        if (actionToRemove != null)
-            context.Set<Schedule>().Remove(actionToRemove);
-
+        if (!context.Set<Schedule>().Contains(item)) return;
+        context.Set<Schedule>().Remove(item);
         context.SaveChanges();
-
     }
 
     public async Task<IEnumerable<Schedule>> GetAllAsync()
     {
         await context.Set<Schedule>().LoadAsync();
         return context.Set<Schedule>();
-    }
-
-    public async Task AddAsync(Schedule item)
-    {
-        await context.Set<Schedule>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Schedule[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Schedule>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)
@@ -79,5 +91,4 @@ public class ScheduleRepository(DbContext context) : IRepository<Schedule>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
 }

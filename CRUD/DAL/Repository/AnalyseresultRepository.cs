@@ -14,18 +14,32 @@ public sealed class AnalyseresultRepository(DbContext context) : IRepository<Ana
 
     public void Add(Analyseresult item)
     {
+        if (context.Set<Analyseresult>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Analyseresult>().Add(item);
         context.SaveChanges();
     }
 
     public async Task AddAsync(Analyseresult item)
     {
+        if (context.Set<Analyseresult>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         await context.Set<Analyseresult>().AddAsync(item);
+        await context.SaveChangesAsync();
     }
 
     public async Task AddRangeAsync(params Analyseresult[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Analyseresult>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         await context.Set<Analyseresult>().AddRangeAsync(items);
         await context.SaveChangesAsync();
     }
@@ -33,6 +47,13 @@ public sealed class AnalyseresultRepository(DbContext context) : IRepository<Ana
     public void AddRange(params Analyseresult[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Analyseresult>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         context.Set<Analyseresult>().AddRange(items);
         context.SaveChanges();
     }
@@ -45,11 +66,8 @@ public sealed class AnalyseresultRepository(DbContext context) : IRepository<Ana
 
     public void Delete(Analyseresult item)
     {
-        var actionToRemove = context.Set<Analyseresult>().FirstOrDefault(x => x.Resid == item.Resid);
-
-        if (actionToRemove != null)
-            context.Set<Analyseresult>().Remove(actionToRemove);
-
+        if (!context.Set<Analyseresult>().Contains(item)) return;
+        context.Set<Analyseresult>().Remove(item);
         context.SaveChanges();
     }
 

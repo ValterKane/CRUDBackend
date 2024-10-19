@@ -15,17 +15,48 @@ public class VoucherRepository(DbContext context) : IRepository<Voucher>
 
     public void Add(Voucher item)
     {
+        if (context.Set<Voucher>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Voucher>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Voucher item)
+    {
+        if (context.Set<Voucher>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Voucher>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Voucher[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Voucher>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Voucher>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Voucher[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Voucher>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Voucher>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Voucher>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Voucher item)
@@ -36,11 +67,8 @@ public class VoucherRepository(DbContext context) : IRepository<Voucher>
 
     public void Delete(Voucher item)
     {
-        var actionToRemove = context.Set<Voucher>().FirstOrDefault(x => x.Void == item.Void);
-
-        if (actionToRemove != null)
-            context.Set<Voucher>().Remove(actionToRemove);
-
+        if (!context.Set<Voucher>().Contains(item)) return;
+        context.Set<Voucher>().Remove(item);
         context.SaveChanges();
     }
 
@@ -48,21 +76,6 @@ public class VoucherRepository(DbContext context) : IRepository<Voucher>
     {
         await context.Set<Voucher>().LoadAsync();
         return context.Set<Voucher>();
-    }
-
-    public async Task AddAsync(Voucher item)
-    {
-        await context.Set<Voucher>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Voucher[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Voucher>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)

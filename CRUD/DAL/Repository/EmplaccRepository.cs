@@ -4,28 +4,57 @@ using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class EmplaccRepository(DbContext context): IRepository<Emplsaccdatum>
+public class EmplaccRepository(DbContext context) : IRepository<Emplsaccdatum>
 {
     private bool _disposed = false;
 
     public IEnumerable<Emplsaccdatum> GetAll()
     {
         return context.Set<Emplsaccdatum>();
-
     }
+
     public void Add(Emplsaccdatum item)
     {
+        if (context.Set<Emplsaccdatum>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Emplsaccdatum>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Emplsaccdatum item)
+    {
+        if (context.Set<Emplsaccdatum>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Emplsaccdatum>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Emplsaccdatum[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Emplsaccdatum>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Emplsaccdatum>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Emplsaccdatum[] items)
     {
-        if (items.Length != 0)
+        foreach (var item in items)
         {
-            context.Set<Emplsaccdatum>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Emplsaccdatum>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Emplsaccdatum>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Emplsaccdatum item)
@@ -36,11 +65,8 @@ public class EmplaccRepository(DbContext context): IRepository<Emplsaccdatum>
 
     public void Delete(Emplsaccdatum item)
     {
-        var actionToRemove = context.Set<Emplsaccdatum>().FirstOrDefault(x => x.Empluuid == item.Empluuid);
-
-        if (actionToRemove != null)
-            context.Set<Emplsaccdatum>().Remove(actionToRemove);
-
+        if (!context.Set<Emplsaccdatum>().Contains(item)) return;
+        context.Set<Emplsaccdatum>().Remove(item);
         context.SaveChanges();
     }
 
@@ -48,21 +74,6 @@ public class EmplaccRepository(DbContext context): IRepository<Emplsaccdatum>
     {
         await context.Set<Emplsaccdatum>().LoadAsync();
         return context.Set<Emplsaccdatum>();
-    }
-
-    public async Task AddAsync(Emplsaccdatum item)
-    {
-        await context.Set<Emplsaccdatum>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Emplsaccdatum[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Emplsaccdatum>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)
@@ -79,5 +90,4 @@ public class EmplaccRepository(DbContext context): IRepository<Emplsaccdatum>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
 }

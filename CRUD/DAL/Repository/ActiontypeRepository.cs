@@ -15,6 +15,7 @@ public sealed class ActiontypeRepository(DbContext context) : IRepository<Action
 
     public void Add(Actiontype item)
     {
+        if (context.Set<Actiontype>().Contains(item)) throw new ArgumentException($"{nameof(item)} already contains!");
         context.Set<Actiontype>().Add(item);
         context.SaveChanges();
     }
@@ -22,8 +23,36 @@ public sealed class ActiontypeRepository(DbContext context) : IRepository<Action
     public void AddRange(params Actiontype[] items)
     {
         if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Actiontype>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
         context.Set<Actiontype>().AddRange(items);
         context.SaveChanges();
+    }
+
+    public async Task AddAsync(Actiontype item)
+    {
+        if (context.Set<Actiontype>().Contains(item)) throw new ArgumentException($"{nameof(item)} already contains!");
+        await context.Set<Actiontype>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Actiontype[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Actiontype>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Actiontype>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
     }
 
     public void Update(Actiontype item)
@@ -34,11 +63,8 @@ public sealed class ActiontypeRepository(DbContext context) : IRepository<Action
 
     public void Delete(Actiontype item)
     {
-        var actionToRemove = context.Set<Actiontype>().FirstOrDefault(x => x.TypeId == item.TypeId);
-
-        if (actionToRemove != null)
-            context.Set<Actiontype>().Remove(actionToRemove);
-
+        if (!context.Set<Actiontype>().Contains(item)) return;
+        context.Set<Actiontype>().Remove(item);
         context.SaveChanges();
     }
 
@@ -46,18 +72,6 @@ public sealed class ActiontypeRepository(DbContext context) : IRepository<Action
     {
         await context.Set<Actiontype>().LoadAsync();
         return context.Set<Actiontype>();
-    }
-
-    public async Task AddAsync(Actiontype item)
-    {
-        await context.Set<Actiontype>().AddAsync(item);
-    }
-
-    public async Task AddRangeAsync(params Actiontype[] items)
-    {
-        if (items.Length == 0) return;
-        await context.Set<Actiontype>().AddRangeAsync(items);
-        await context.SaveChangesAsync();
     }
 
     private void Dispose(bool disposing)

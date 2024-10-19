@@ -15,17 +15,48 @@ public class ParentRepository(DbContext context) : IRepository<Parent>
 
     public void Add(Parent item)
     {
+        if (context.Set<Parent>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Parent>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Parent item)
+    {
+        if (context.Set<Parent>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Parent>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Parent[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Parent>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Parent>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Parent[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Parent>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Parent>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Parent>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Parent item)
@@ -36,34 +67,15 @@ public class ParentRepository(DbContext context) : IRepository<Parent>
 
     public void Delete(Parent item)
     {
-        var actionToRemove = context.Set<Parent>().FirstOrDefault(x => x.Paruuid == item.Paruuid);
-
-        if (actionToRemove != null)
-            context.Set<Parent>().Remove(actionToRemove);
-
+        if (!context.Set<Parent>().Contains(item)) return;
+        context.Set<Parent>().Remove(item);
         context.SaveChanges();
-
     }
 
     public async Task<IEnumerable<Parent>> GetAllAsync()
     {
         await context.Set<Parent>().LoadAsync();
         return context.Set<Parent>();
-    }
-
-    public async Task AddAsync(Parent item)
-    {
-        await context.Set<Parent>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Parent[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Parent>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)

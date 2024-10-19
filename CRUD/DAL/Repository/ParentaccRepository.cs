@@ -14,17 +14,48 @@ public class ParentaccRepository(DbContext context) : IRepository<Parentacc>
 
     public void Add(Parentacc item)
     {
+        if (context.Set<Parentacc>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Parentacc>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Parentacc item)
+    {
+        if (context.Set<Parentacc>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Parentacc>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Parentacc[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Parentacc>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Parentacc>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Parentacc[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Parentacc>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Parentacc>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Parentacc>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Parentacc item)
@@ -35,11 +66,8 @@ public class ParentaccRepository(DbContext context) : IRepository<Parentacc>
 
     public void Delete(Parentacc item)
     {
-        var actionToRemove = context.Set<Parentacc>().FirstOrDefault(x => x.Paruuid == item.Paruuid);
-
-        if (actionToRemove != null)
-            context.Set<Parentacc>().Remove(actionToRemove);
-
+        if (!context.Set<Parentacc>().Contains(item)) return;
+        context.Set<Parentacc>().Remove(item);
         context.SaveChanges();
     }
 
@@ -47,21 +75,6 @@ public class ParentaccRepository(DbContext context) : IRepository<Parentacc>
     {
         await context.Set<Parentacc>().LoadAsync();
         return context.Set<Parentacc>();
-    }
-
-    public async Task AddAsync(Parentacc item)
-    {
-        await context.Set<Parentacc>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Parentacc[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Parentacc>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)
@@ -78,5 +91,4 @@ public class ParentaccRepository(DbContext context) : IRepository<Parentacc>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-   
 }

@@ -4,28 +4,59 @@ using Action = System.Action;
 
 namespace CRUD.DAL.Repository;
 
-public class DoctorRepository(DbContext context): IRepository<Doctor>
+public class DoctorRepository(DbContext context) : IRepository<Doctor>
 {
     private bool _disposed = false;
 
     public IEnumerable<Doctor> GetAll()
     {
         return context.Set<Doctor>();
-
     }
+
     public void Add(Doctor item)
     {
+        if (context.Set<Doctor>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
         context.Set<Doctor>().Add(item);
         context.SaveChanges();
     }
 
+    public async Task AddAsync(Doctor item)
+    {
+        if (context.Set<Doctor>().Contains(item))
+            throw new ArgumentException($"{nameof(item)} already contains!");
+
+        await context.Set<Doctor>().AddAsync(item);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task AddRangeAsync(params Doctor[] items)
+    {
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
+        {
+            if (context.Set<Doctor>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
+        }
+
+        await context.Set<Doctor>().AddRangeAsync(items);
+        await context.SaveChangesAsync();
+    }
+
     public void AddRange(params Doctor[] items)
     {
-        if (items.Length != 0)
+        if (items.Length == 0) return;
+
+        foreach (var item in items)
         {
-            context.Set<Doctor>().AddRange(items);
-            context.SaveChanges();
+            if (context.Set<Doctor>().Contains(item))
+                throw new ArgumentException($"{nameof(item)} already contains!");
         }
+
+        context.Set<Doctor>().AddRange(items);
+        context.SaveChanges();
     }
 
     public void Update(Doctor item)
@@ -36,11 +67,8 @@ public class DoctorRepository(DbContext context): IRepository<Doctor>
 
     public void Delete(Doctor item)
     {
-        var actionToRemove = context.Set<Doctor>().FirstOrDefault(x => x.Docuuid == item.Docuuid);
-
-        if (actionToRemove != null)
-            context.Set<Doctor>().Remove(actionToRemove);
-
+        if (!context.Set<Doctor>().Contains(item)) return;
+        context.Set<Doctor>().Remove(item);
         context.SaveChanges();
     }
 
@@ -48,21 +76,6 @@ public class DoctorRepository(DbContext context): IRepository<Doctor>
     {
         await context.Set<Doctor>().LoadAsync();
         return context.Set<Doctor>();
-    }
-
-    public async Task AddAsync(Doctor item)
-    {
-        await context.Set<Doctor>().AddAsync(item);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task AddRangeAsync(params Doctor[] items)
-    {
-        if (items.Length != 0)
-        {
-            await context.Set<Doctor>().AddRangeAsync(items);
-            await context.SaveChangesAsync();
-        }
     }
 
     private void Dispose(bool disposing)
@@ -79,5 +92,4 @@ public class DoctorRepository(DbContext context): IRepository<Doctor>
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
 }
