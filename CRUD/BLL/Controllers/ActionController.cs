@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using CRUD.DAL.Context;
-using CRUD.DAL.Entities;
 using CRUD.DAL.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Action = CRUD.DAL.Entities.Action;
