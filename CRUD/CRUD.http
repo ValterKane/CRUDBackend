@@ -1,6 +1,14 @@
-@CRUD_HostAddress = http://localhost:5135
+@CRUD_HostAddress = https://localhost:7035
 
-GET {{CRUD_HostAddress}}/weatherforecast/
+###
+
+GET {{CRUD_HostAddress}}/api/action/GetSingle?guid=cefbc233-5aee-4647-80f4-27bba412ff3d
 Accept: application/json
+
+###
+
+GET {{CRUD_HostAddress}}/api/action/GetAll
+Accept: application/json
+
 
 ###

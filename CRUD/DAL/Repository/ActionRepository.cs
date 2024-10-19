@@ -4,7 +4,7 @@ using Action = CRUD.DAL.Entities.Action;
 
 namespace CRUD.DAL.Repository;
 
-public sealed class ActionRepository(DbContext context) : IRepository<Action>
+public sealed class ActionRepository(MyDbContext context) : IRepository<Action>
 {
     private bool _disposed = false;
 
