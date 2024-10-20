@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using CRUD.DAL.Entities;
 using CRUD.DAL.Repository;
+using CRUD.Persistence.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CRUD.BLL.Controllers;
