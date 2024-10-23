@@ -1,6 +1,18 @@
 ﻿services:
   crud:
-    image: crud
+    image: crud-service
     build:
       context: .
       dockerfile: CRUD/Dockerfile
+    ports:
+      - "14441:8081"
+      - "14440:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=12761276k
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    expose:
+      - 8000
+    volumes:
+      - ~/.aspnet/https:/https:ro 

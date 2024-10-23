@@ -9,8 +9,23 @@ namespace CRUD.BLL.Controllers;
 
 [Route("api/employee")]
 [ApiController]
-public class EmployeeController(MedemplRepository repository) : ControllerBase
+public class EmployeeController(MedemplRepository repository, EmplaccRepository emplaccRepository) : ControllerBase
 {
+    [HttpGet("MedUser")]
+    public async Task<ActionResult<Emplsaccdatum>> GetUserByLogin(string login)
+    {
+        var badRequestedData = (await emplaccRepository.GetAllAsync()).FirstOrDefault(x => x.Login == login);
+
+        if (badRequestedData == null)
+        {
+           return NotFound($"User with {login} not found!");
+        }
+        else
+        {
+           return Ok(badRequestedData);
+        }
+    }
+
     [HttpGet("GetAll")]
     public async Task<IEnumerable<Medempl>> GetAllAsync()
     {

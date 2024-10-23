@@ -1,10 +1,6 @@
-using System.Diagnostics;
 using System.Text.Json.Serialization;
-using CRUD.BLL.Controllers;
 using CRUD.DAL.Context;
-using CRUD.DAL.Entities;
 using CRUD.DAL.Entities.Abstraction;
-using CRUD.DAL.Repository;
 using CRUD.Service.ReflectionApplication;
 using Microsoft.EntityFrameworkCore;
 
