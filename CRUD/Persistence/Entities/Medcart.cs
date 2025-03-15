@@ -14,7 +14,7 @@ public class Medcart : BaseEntity
 
     public Guid Docuuid { get; set; }
     
-    public virtual Child Chuu { get; set; } = null!;
+    public virtual Child? Chuu { get; set; }
     
-    public virtual Doctor Docuu { get; set; } = null!;
+    public virtual Doctor? Docuu { get; set; }
 }

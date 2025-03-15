@@ -15,8 +15,12 @@ public class Analyseresult : BaseEntity
     public string? Resultcomment { get; set; }
     
     public string Result { get; set; } = null!;
+
+    public Guid Childuuid { get; set; }
     
     public virtual Analysetype? Analysetype { get; set; }
     
     public virtual Medempl? Empluu { get; set; }
+    
+    public virtual Child? Chuu { get; set; }
 }

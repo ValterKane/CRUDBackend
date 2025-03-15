@@ -70,4 +70,12 @@ public class DoctorController(DoctorRepository repository) : ControllerBase
         }
     }
 
+    [HttpGet("IsDoctor")]
+    public async Task<bool> IsDoctor(Guid medUserGuid)
+    {
+       var doctors =  await repository.GetAllAsync();
+
+       return doctors.Any(x => x.Docuuid == medUserGuid);
+    }
+
 }

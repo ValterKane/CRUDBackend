@@ -15,5 +15,5 @@ public partial class Emplsaccdatum : BaseEntity
 
     public string Role { get; set; } = null!;
     
-    public virtual Medempl Empluu { get; set; } = null!;
+    public virtual Medempl? Empluu { get; set; }
 }

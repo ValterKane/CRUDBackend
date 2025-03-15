@@ -14,5 +14,5 @@ public  class Parentacc : BaseEntity
 
     public short Status { get; set; }
     
-    public virtual Parent Paruu { get; set; } = null!;
+    public virtual Parent? Paruu { get; set; }
 }

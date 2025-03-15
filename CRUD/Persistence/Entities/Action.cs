@@ -14,7 +14,9 @@ public class Action : BaseEntity
     
     public string Schedule { get; set; } = null!;
     
+    // 1 - M
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     
+    // 1 - 1
     public virtual Actiontype? ActionType { get; set; }
 }

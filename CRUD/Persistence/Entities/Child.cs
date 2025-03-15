@@ -21,4 +21,6 @@ public class Child : BaseEntity
     public virtual Parantschild? Parantschild { get; set; }
     
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+
+    public virtual ICollection<Analyseresult> Analyseresults { get; set; } = new List<Analyseresult>();
 }

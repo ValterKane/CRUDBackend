@@ -10,6 +10,7 @@ public class Actiontype : BaseEntity
     
     public string Name { get; set; } = null!;
     
+    // 1 - M
     public virtual ICollection<Action> Actions { get; set; } = new List<Action>();
     
 }

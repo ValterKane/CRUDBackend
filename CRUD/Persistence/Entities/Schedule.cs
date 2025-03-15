@@ -14,7 +14,7 @@ public class Schedule : BaseEntity
 
     public string Place { get; set; } = null!;
     
-    public virtual Action Actuu { get; set; } = null!;
+    public virtual Action? Actuu { get; set; }
     
-    public virtual Child Chuu { get; set; } = null!;
+    public virtual Child? Chuu { get; set; }
 }

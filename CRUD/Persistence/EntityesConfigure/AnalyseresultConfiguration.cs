@@ -15,6 +15,7 @@ public class AnalyseresultConfiguration : IEntityTypeConfiguration<Analyseresult
         builder.Property(p => p.Empluuid).HasColumnName("empluuid");
         builder.Property(p => p.TypeOfAnalyse).HasColumnName("analystype");
         builder.Property(p => p.Resultcomment).HasColumnName("resultcomment");
+        builder.Property(p => p.Childuuid).HasColumnName("child").HasColumnType("uuid");
         builder.Property(p => p.Result).HasColumnName("result").HasColumnType("json");
         //Keys configuration
         builder.HasKey(e => e.Resid).HasName("analyseresult_pkey");
@@ -26,5 +27,9 @@ public class AnalyseresultConfiguration : IEntityTypeConfiguration<Analyseresult
         builder.HasOne(d => d.Empluu).WithMany(p => p.Analyseresults).HasForeignKey(k => k.Empluuid)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("analyseresult_empluuid_fkey");
+
+        builder.HasOne(d => d.Chuu).WithMany(p => p.Analyseresults).HasForeignKey(k => k.Childuuid)
+            .OnDelete(DeleteBehavior.ClientSetNull)
+            .HasConstraintName("analyseresult_child_chuuid_fk");
     }
 }

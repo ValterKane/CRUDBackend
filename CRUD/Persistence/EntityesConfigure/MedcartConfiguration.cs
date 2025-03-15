@@ -13,7 +13,7 @@ public class MedcartConfiguration : IEntityTypeConfiguration<Medcart>
         // Mapping to prop
         builder.Property(p => p.Timemark).HasColumnName("timemark").HasColumnType("timestamp without time zone");
         builder.Property(p => p.Chuuid).HasColumnName("chuuid");
-        builder.Property(p => p.Textresult).HasColumnName("textresult");
+        builder.Property(p => p.Textresult).HasColumnName("textresult").HasColumnType("json");
         builder.Property(p => p.Docuuid).HasColumnName("docuuid");
         // Keys configuration
         builder.HasKey(e => new { timemark = e.Timemark, chuuid = e.Chuuid }).HasName("medcart_pkey");

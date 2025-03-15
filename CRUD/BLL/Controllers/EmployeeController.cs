@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using CRUD.BLL.DTO;
 using CRUD.DAL.Entities;
 using CRUD.DAL.Repository;
 using CRUD.Persistence.Repository;
@@ -41,18 +43,37 @@ public class EmployeeController(MedemplRepository repository, EmplaccRepository 
         return dataForResult;
     }
 
-    [HttpDelete]
-    public async Task<ActionResult> DeleteAction(Medempl action)
+    [HttpDelete("MedUser")]
+    public async Task<ActionResult> DeleteAction([FromBody] Guid targetGuid)
     {
         try
         {
-            await Task.Run(() => repository.Delete(action));
+            await Task.Run(() => repository.Delete(new Medempl(){Empluuid = targetGuid}));
             return Ok("The action successfully deleted!");
         }
         catch (Exception e)
         {
             Debug.WriteLine(e.Message);
             return BadRequest(e.Message);
+        }
+    }
+
+    [HttpDelete("MedUserAcc")]
+    public async Task<ActionResult> DeleteMedUser([FromBody] Guid targetGuid)
+    {
+        try
+        {
+            await Task.Run(() => emplaccRepository.Delete(new Emplsaccdatum()
+            {
+                Empluuid = targetGuid,
+            }));
+
+            return Ok("Successful complete");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 
@@ -82,6 +103,45 @@ public class EmployeeController(MedemplRepository repository, EmplaccRepository 
         catch (Exception e)
         {
             Debug.WriteLine(e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("MedUserAcc")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> AddNewMedUserAcc([FromBody] Emplsaccdatum medUserAcc)
+    {
+        try
+        {
+            await emplaccRepository.AddAsync(medUserAcc);
+            return Ok("Successfully added!");
+        }
+        catch (Exception e)
+        {
+            if (e is ArgumentException)
+                return Conflict(e.Message);
+            
+            return BadRequest(e.Message);
+        }
+        
+    }
+
+    [HttpPost("MedUser")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> AddNewMedUser([FromBody] Medempl medEmpl)
+    {
+        try
+        {
+            await repository.AddAsync(medEmpl);
+            return Ok("Successful complete!");
+        }
+        catch (Exception e)
+        {
+            if (e is ArgumentException)
+                return Conflict(e.Message);
+            
             return BadRequest(e.Message);
         }
     }

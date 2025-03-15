@@ -8,7 +8,11 @@ namespace CRUD.BLL.Controllers;
 
 [Route("api/parent")]
 [ApiController]
-public class ParentController(ParentRepository repository) : ControllerBase
+public class ParentController(
+    ParentRepository repository
+    , ParentaccRepository parentaccRepository
+    , ParentchildRepository parentchildRepository) :
+    ControllerBase
 {
     [HttpGet("GetAll")]
     public async Task<IEnumerable<Parent>> GetAllAsync()
@@ -24,6 +28,21 @@ public class ParentController(ParentRepository repository) : ControllerBase
         if (dataForResult is null) return NotFound($"Cannot find the parent with guid:{guid}");
         return dataForResult;
     }
+
+    [HttpGet("GetByChildGuid")]
+    public async Task<IEnumerable<Parent>> GetParentByChildGuid(Guid guid)
+    {
+        var parchild = await parentchildRepository.GetAllAsync();
+
+        var parentGuids = parchild.Where(x => x.Chuuid == guid).Select(x => x.Paruuid).ToList();
+
+        var parent = await repository.GetAllAsync();
+
+        var result = parent.Where(x => parentGuids.Contains(x.Paruuid));
+
+        return result;
+    }
+
 
     [HttpDelete]
     public async Task<ActionResult> DeleteAction(Parent action)
@@ -70,4 +89,24 @@ public class ParentController(ParentRepository repository) : ControllerBase
         }
     }
 
+    [HttpGet("ParentAcc")]
+    public async Task<Parentacc> GetParentAccByLogin(string login)
+    {
+        return (await parentaccRepository.GetAllAsync()).First(x => x.Login == login);
+    }
+
+    [HttpPost("ParentAcc")]
+    public async Task<ActionResult> AddNewParent(Parentacc parentacc)
+    {
+        try
+        {
+            await parentaccRepository.AddAsync(parentacc);
+            return Ok("The action successfully added!");
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return BadRequest(e.Message);
+        }
+    }
 }

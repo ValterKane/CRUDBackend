@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 // Add database
@@ -33,7 +34,11 @@ foreach (var listOfClasses in repositoryService.SelectMany(repo => repo.Value))
 var app = builder.Build();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json","CRUD API v1");
+    options.RoutePrefix = string.Empty;
+});
 app.UseHttpsRedirection();
 app.MapControllers();
 
